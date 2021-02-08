@@ -3,8 +3,10 @@ class OysterCard
   alias :in_journey? :journey
 
   MAXIMUM_BALANCE = 90
+  MINIMUM_BALANCE = 1
   def initialize(balance = 0)
     @maximum_balance = MAXIMUM_BALANCE
+    @minimum_balance = MINIMUM_BALANCE
     @balance = balance
     @journey = false
   end
@@ -19,6 +21,7 @@ class OysterCard
   end
 
   def touch_in
+    min_balance_error
     @journey = true
   end
 
@@ -30,6 +33,11 @@ class OysterCard
 
   def max_balance_error(amount)
     fail "Cannot top up beyond £#{@maximum_balance}." if (@balance + amount) > @maximum_balance
+
+  end
+
+  def min_balance_error
+    fail "Insufficient funds." if @balance < @minimum_balance
 
   end
 

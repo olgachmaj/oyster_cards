@@ -33,16 +33,25 @@ describe OysterCard do
     subject.deduct(amount = 5)
     expect(subject.balance).to eq current_balance - amount
   end
+  it 'should throw error when journey attempted with under minimum balance' do
+    min_bal = OysterCard::MINIMUM_BALANCE
+    expect { subject.touch_in }.to raise_error "Insufficient funds."
+  end
   it 'should have journey status of false when new' do
     expect(described_class.new.in_journey?).to eq false
   end
-  it 'should have in journey status of true after touch_in' do
-    subject.touch_in
-    expect(subject.in_journey?).to eq true
+
+  describe 'journey test' do
+    before(:each) {subject.top_up(5)}
+    it 'should have in journey status of true after touch_in' do
+      subject.touch_in
+      expect(subject.in_journey?).to eq true
+    end
+    it 'should have in journey status of false after touch_out' do
+      subject.touch_in
+      subject.touch_out
+      expect(subject.in_journey?).to eq false
+    end
   end
-  it 'should have in journey status of false after touch_out' do
-    subject.touch_in
-    subject.touch_out
-    expect(subject.in_journey?).to eq false
-  end
+  
 end
