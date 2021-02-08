@@ -3,6 +3,9 @@ require 'oyster_card'
 describe OysterCard do
   #checking if oystercard has the method of balance
   it { is_expected.to respond_to :balance }
+  it { is_expected.to respond_to :touch_in }
+  it { is_expected.to respond_to :in_journey? }
+  it { is_expected.to respond_to :touch_out }
 
   #checking that balance returns the balance
   it 'has default balance of 0 when new' do
@@ -29,5 +32,17 @@ describe OysterCard do
     current_balance = subject.balance
     subject.deduct(amount = 5)
     expect(subject.balance).to eq current_balance - amount
+  end
+  it 'should have journey status of false when new' do
+    expect(described_class.new.in_journey?).to eq false
+  end
+  it 'should have in journey status of true after touch_in' do
+    subject.touch_in
+    expect(subject.in_journey?).to eq true
+  end
+  it 'should have in journey status of false after touch_out' do
+    subject.touch_in
+    subject.touch_out
+    expect(subject.in_journey?).to eq false
   end
 end
