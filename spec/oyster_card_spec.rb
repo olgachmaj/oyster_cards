@@ -19,7 +19,8 @@ describe OysterCard do
     expect(subject.balance).to eq current_balance + amount
   end
   it 'should throw error when topped up beyond £90' do
+    max_bal = OysterCard::MAXIMUM_BALANCE
     subject.top_up(90)
-    expect { subject.top_up(1) }.to raise_error "Card balance at maximum."
+    expect { subject.top_up(1) }.to raise_error "Card balance at already at maximum value of £#{max_bal}."
   end
 end
