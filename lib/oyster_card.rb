@@ -16,20 +16,21 @@ class OysterCard
     @balance += amount
   end
 
-  def deduct(fare)
-    @balance -= fare
-  end
-
   def touch_in
     min_balance_error
     @journey = true
   end
 
-  def touch_out
+  def touch_out(fare)
+    deduct(fare)
     @journey = false
   end
 
   private
+
+  def deduct(fare)
+    @balance -= fare
+  end
 
   def max_balance_error(amount)
     fail "Cannot top up beyond £#{@maximum_balance}." if (@balance + amount) > @maximum_balance
