@@ -5,8 +5,17 @@ class OysterCard
     @maximum_balance = MAXIMUM_BALANCE
     @balance = balance
   end
+
   def top_up(amount)
-    fail 'Card balance at maximum.' if (@balance + amount) > @maximum_balance
+    max_balance_error(amount)
     @balance += amount
   end
+
+  private
+
+  def max_balance_error(amount)
+    fail 'Card balance at maximum.' if (@balance + amount) > @maximum_balance
+
+  end
+
 end
