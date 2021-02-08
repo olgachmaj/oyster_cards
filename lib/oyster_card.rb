@@ -11,10 +11,14 @@ class OysterCard
     @balance += amount
   end
 
+  def deduct(fare)
+    @balance -= fare
+  end
+
   private
 
   def max_balance_error(amount)
-    fail "Card balance at already at maximum value of £#{@maximum_balance}." if (@balance + amount) > @maximum_balance
+    fail "Cannot top up beyond £#{@maximum_balance}." if (@balance + amount) > @maximum_balance
 
   end
 
