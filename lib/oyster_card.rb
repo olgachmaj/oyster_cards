@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class OysterCard
-  attr_reader :balance, :journey, :entry_station
+  attr_reader :balance, :journey, :entry_station, :exit_station, :journey_history
   alias in_journey? journey
 
   MAXIMUM_BALANCE = 90
@@ -11,6 +11,7 @@ class OysterCard
     @minimum_balance = MINIMUM_BALANCE
     @balance = balance
     @journey = false
+    @journey_history = []
   end
 
   def top_up(amount)
@@ -21,12 +22,13 @@ class OysterCard
   def touch_in(station)
     min_balance_error
     @journey = true
-    @entry_station = station
+    @journey_history << @entry_station = station
   end
 
-  def touch_out(fare)
+  def touch_out(fare, station)
     deduct(fare)
     @journey = false
+    @journey_history << @exit_station = station
     @entry_station = nil
   end
 
