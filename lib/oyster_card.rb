@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class OysterCard
-  attr_reader :balance, :journey
-  alias :in_journey? :journey
+  attr_reader :balance, :journey, :entry_station
+  alias in_journey? journey
 
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
@@ -16,14 +18,16 @@ class OysterCard
     @balance += amount
   end
 
-  def touch_in
+  def touch_in(station)
     min_balance_error
     @journey = true
+    @entry_station = station
   end
 
   def touch_out(fare)
     deduct(fare)
     @journey = false
+    @entry_station = nil
   end
 
   private
@@ -33,13 +37,12 @@ class OysterCard
   end
 
   def max_balance_error(amount)
-    fail "Cannot top up beyond £#{@maximum_balance}." if (@balance + amount) > @maximum_balance
-
+    if (@balance + amount) > @maximum_balance
+      raise "Cannot top up beyond £#{@maximum_balance}."
+    end
   end
 
   def min_balance_error
-    fail "Insufficient funds." if @balance < @minimum_balance
-
+    raise 'Insufficient funds.' if @balance < @minimum_balance
   end
-
 end
