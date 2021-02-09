@@ -35,12 +35,7 @@ describe OysterCard do
     subject.top_up(max_bal)
     expect { subject.top_up(1) }.to raise_error "Cannot top up beyond £#{max_bal}."
   end
-  # it 'money is deducted from balance' do
-  #  subject.top_up(10)
-  #  current_balance = subject.balance
-  #  subject.deduct(amount = test_top_up)
-  #  expect(subject.balance).to eq current_balance - amount
-  # end
+
   it 'should throw error when journey attempted with under minimum balance' do
     min_bal = OysterCard::MINIMUM_BALANCE
     expect { subject.touch_in(entry_station) }.to raise_error 'Insufficient funds.'
