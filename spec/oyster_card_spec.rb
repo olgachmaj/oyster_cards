@@ -12,7 +12,6 @@ describe OysterCard do
   # checking if oystercard has the method of balance
   it { is_expected.to respond_to :balance }
   it { is_expected.to respond_to :touch_in }
-  it { is_expected.to respond_to :in_journey? }
   it { is_expected.to respond_to :touch_out }
 
   # checking that balance returns the balance
@@ -40,47 +39,9 @@ describe OysterCard do
     min_bal = OysterCard::MINIMUM_BALANCE
     expect { subject.touch_in(entry_station) }.to raise_error 'Insufficient funds.'
   end
-  it 'should have journey status of false when new' do
-    expect(described_class.new.in_journey?).to eq false
-  end
 
   it 'touch_out should deduct fare amount from balance' do
     subject.top_up(test_top_up)
-    expect { subject.touch_out(test_fare, exit_station) }.to change { subject.balance }.by(-test_fare)
-  end
-
-  describe 'journey test' do
-    before(:each) { subject.top_up(test_top_up) }
-    it 'should have in journey status of true after touch_in(station)' do
-      subject.touch_in(entry_station)
-      expect(subject.in_journey?).to eq true
-    end
-    it 'should have in journey status of false after touch_out' do
-      subject.touch_in(entry_station)
-      subject.touch_out(test_fare, exit_station)
-      expect(subject.in_journey?).to eq false
-    end
-    it 'remember the touch in location' do
-      subject.touch_in(entry_station)
-      expect(subject.entry_station).to eq entry_station
-    end
-
-    it 'forgets the entry_station on touch out' do
-      subject.touch_in(entry_station)
-      subject.touch_out(test_fare, exit_station)
-      expect(subject.entry_station).to eq nil
-    end
-
-    it 'displays trip history' do
-      subject.touch_in(entry_station)
-      subject.touch_out(test_fare, exit_station)
-      expect(subject.journey_history). to eq [entry_station, exit_station]
-    end
-
-    it 'stores exit station' do
-      subject.touch_in(entry_station)
-      subject.touch_out(test_fare, exit_station)
-      expect(subject.exit_station).to eq exit_station
-    end
+    expect { subject.touch_out(exit_station) }.to change { subject.balance }.by(-test_fare)
   end
 end
