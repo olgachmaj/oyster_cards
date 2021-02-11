@@ -18,13 +18,14 @@ class OysterCard
   end
 
   def touch_in(station)
-    
+    deduct(@journey.fare(@journey.exit_station))
     min_balance_error
+    @journey = @journey.new
     @journey.startjourney(station)
   end
 
   def touch_out(station)
-    deduct(@journey.fare_out)
+    deduct(@journey.fare(@journey.entry_station))
     @journey.endjourney(station)
   end
 

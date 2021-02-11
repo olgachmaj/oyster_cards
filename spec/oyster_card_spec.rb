@@ -7,8 +7,8 @@ describe OysterCard do
   let(:entry_station) { double :station}
   let(:exit_station) { double :station}
 
-  test_top_up = 5
-  test_fare = 2
+  test_top_up = 7
+  test_fare = 1
   # checking if oystercard has the method of balance
   it { is_expected.to respond_to :balance }
   it { is_expected.to respond_to :touch_in }
@@ -42,6 +42,19 @@ describe OysterCard do
 
   it 'touch_out should deduct fare amount from balance' do
     subject.top_up(test_top_up)
+    subject.touch_in(:station)
     expect { subject.touch_out(exit_station) }.to change { subject.balance }.by(-test_fare)
   end
+
+  it 'touch_in should deduct penalty if @exit_station == nil' do
+    subject.top_up(test_top_up)
+    expect { subject.touch_in(exit_station) }.to change { subject.balance }.by(-6)
+  end
+
+  it 'touch_out should deduct penalty if @entry_station == nil' do
+    subject.top_up(test_top_up)
+    expect { subject.touch_out(exit_station) }.to change { subject.balance }.by(-6)
+  end
+
+
 end
