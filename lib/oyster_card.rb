@@ -5,11 +5,12 @@ class OysterCard
 
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
-  def initialize(balance = 0)
+  def initialize(balance = 0,journey_log = JourneyLog.new)
     @maximum_balance = MAXIMUM_BALANCE
     @minimum_balance = MINIMUM_BALANCE
     @balance = balance
     @journey = Journey.new
+    @journey_log = journey_log
   end
 
   def top_up(amount)
@@ -18,15 +19,16 @@ class OysterCard
   end
 
   def touch_in(station)
-    deduct(@journey.fare(@journey.exit_station))
+    deduct(@journey.penalty(@exit_station))
     min_balance_error
     @journey = @journey.new
     @journey.startjourney(station)
   end
 
   def touch_out(station)
-    deduct(@journey.fare(@journey.entry_station))
+    @journey_log.add_journey(@journey)
     @journey.endjourney(station)
+    deduct(@journey.fare)
   end
 
   private

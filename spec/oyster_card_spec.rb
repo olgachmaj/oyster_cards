@@ -3,9 +3,7 @@
 require 'oyster_card'
 
 describe OysterCard do
-  let(:station) { double :station }
-  let(:entry_station) { double :station}
-  let(:exit_station) { double :station}
+
 
   test_top_up = 7
   test_fare = 1
@@ -36,24 +34,41 @@ describe OysterCard do
   end
 
   it 'should throw error when journey attempted with under minimum balance' do
+    @entry_station = double()
+    allow(@entry_station).to receive(:zone){2}
+    allow(@entry_station).to receive(:name){'Bexleyheath'}
     min_bal = OysterCard::MINIMUM_BALANCE
-    expect { subject.touch_in(entry_station) }.to raise_error 'Insufficient funds.'
+    expect { subject.touch_in(@entry_station) }.to raise_error 'Insufficient funds.'
   end
 
   it 'touch_out should deduct fare amount from balance' do
-    subject.top_up(test_top_up)
-    subject.touch_in(:station)
-    expect { subject.touch_out(exit_station) }.to change { subject.balance }.by(-test_fare)
+    @oystercard = OysterCard.new
+    @exit_station = double()
+    allow(@exit_station).to receive(:zone){1}
+    allow(@exit_station).to receive(:name){'Victoria'}
+    @entry_station = double()
+    allow(@entry_station).to receive(:zone){2}
+    allow(@entry_station).to receive(:name){'Bexleyheath'}
+    @oystercard.top_up(test_top_up)
+    @oystercard.touch_in(@entry_station)
+    expect { @oystercard.touch_out(@exit_station) }.to change { @oystercard.balance }.by(test_fare)
   end
 
   it 'touch_in should deduct penalty if @exit_station == nil' do
+    @exit_station = double()
+    allow(@exit_station).to receive(:zone){1}
+    allow(@exit_station).to receive(:name){'Victoria'}
+
     subject.top_up(test_top_up)
-    expect { subject.touch_in(exit_station) }.to change { subject.balance }.by(-6)
+    expect { subject.touch_in(@exit_station) }.to change { subject.balance }.by(-6)
   end
 
   it 'touch_out should deduct penalty if @entry_station == nil' do
+    @exit_station = double()
+    allow(@exit_station).to receive(:zone){1}
+    allow(@exit_station).to receive(:name){'Victoria'}
     subject.top_up(test_top_up)
-    expect { subject.touch_out(exit_station) }.to change { subject.balance }.by(-6)
+    expect { subject.touch_out(@exit_station) }.to change { subject.balance }.by(-6)
   end
 
 

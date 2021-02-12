@@ -8,7 +8,9 @@ class Journey
 
   def startjourney(station)
     @journey = true
+    return if station == nil
     @entry_station = station
+    @entry_zone = station.zone
   end
 
   def endjourney(station)
@@ -21,9 +23,13 @@ class Journey
     @journey_history << {entry_station: @entry_station, exit_station: @exit_station}
   end
 
-  def fare(station = nil)
+  def penalty(station)
     return 6 if station == nil
-    1
+  end
+
+  def fare
+    return 6 if @entry_station == nil
+    [@exit_station.zone, @entry_station.zone].sort.inject(:-)
   end
 
   def new
